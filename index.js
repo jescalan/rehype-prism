@@ -1,51 +1,44 @@
-'use strict';
+const visit = require('unist-util-visit')
+const nodeToString = require('hast-util-to-string')
+const refractor = require('refractor')
 
-const visit = require('unist-util-visit');
-const nodeToString = require('hast-util-to-string');
-const refractor = require('refractor');
-
-module.exports = options => {
-  options = options || {};
-
+module.exports = (options = {}) => {
   return tree => {
-    visit(tree, 'element', visitor);
-  };
+    visit(tree, 'element', visitor)
+  }
 
-  function visitor(node, index, parent) {
-    if (!parent || parent.tagName !== 'pre' || node.tagName !== 'code') {
-      return;
-    }
+  function visitor(node, _, parent) {
+    if (!parent || parent.tagName !== 'pre' || node.tagName !== 'code') return
 
-    const lang = getLanguage(node);
+    const lang = getLanguage(node)
 
-    if (lang === null) {
-      return;
-    }
+    if (lang === null) return
 
-    let result;
+    let result
     try {
-      parent.properties.className = (parent.properties.className || [])
-        .concat('language-' + lang);
-      result = refractor.highlight(nodeToString(node), lang);
+      parent.properties.className = (parent.properties.className || []).concat(
+        'language-' + lang
+      )
+      result = refractor.highlight(nodeToString(node), lang)
     } catch (err) {
       if (options.ignoreMissing && /Unknown language/.test(err.message)) {
-        return;
+        return
       }
-      throw err;
+      throw err
     }
 
-    node.children = result;
+    node.children = result
   }
-};
+}
 
 function getLanguage(node) {
-  const className = node.properties.className || [];
+  const className = node.properties.className || []
 
   for (const classListItem of className) {
     if (classListItem.slice(0, 9) === 'language-') {
-      return classListItem.slice(9).toLowerCase();
+      return classListItem.slice(9).toLowerCase()
     }
   }
 
-  return null;
+  return null
 }
