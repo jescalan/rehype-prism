@@ -1,23 +1,21 @@
-'use strict';
-
-const rehype = require('rehype');
-const dedent = require('dedent');
-const rehypePrism = require('./index');
+const rehype = require('rehype')
+const dedent = require('dedent')
+const rehypePrism = require('./index')
 
 const processHtml = (html, options) => {
   return rehype()
     .data('settings', { fragment: true })
     .use(rehypePrism, options)
     .processSync(html)
-    .toString();
-};
+    .toString()
+}
 
 test('copies the language- class to pre tag', () => {
   const result = processHtml(dedent`
     <pre><code class="language-css"></code></pre>
-  `);
-  expect(result).toMatchSnapshot();
-});
+  `)
+  expect(result).toMatchSnapshot()
+})
 
 test('finds code and highlights', () => {
   const result = processHtml(dedent`
@@ -25,9 +23,9 @@ test('finds code and highlights', () => {
       <p>foo</p>
       <pre><code class="language-css">p { color: red }</code></pre>
     </div>
-  `);
-  expect(result).toMatchSnapshot();
-});
+  `)
+  expect(result).toMatchSnapshot()
+})
 
 test('handles uppercase languages correctly', () => {
   const result = processHtml(dedent`
@@ -35,29 +33,54 @@ test('handles uppercase languages correctly', () => {
       <p>foo</p>
       <pre><code class="language-CSS">p { color: red }</code></pre>
     </div>
-  `);
-  expect(result).toMatchSnapshot();
-});
+  `)
+  expect(result).toMatchSnapshot()
+})
 
 test('does nothing to code block without language- class', () => {
   const result = processHtml(dedent`
     <pre><code>p { color: red }</code></pre>
-  `);
-  expect(result).toMatchSnapshot();
-});
+  `)
+  expect(result).toMatchSnapshot()
+})
 
 test('throw error with fake language- class', () => {
   expect(() => {
     processHtml(dedent`
       <pre><code class="language-thisisnotalanguage">p { color: red }</code></pre>
-    `);
-  }).toThrow(/Unknown language/);
-});
+    `)
+  }).toThrow(/Unknown language/)
+})
 
 test('with options.ignoreMissing, does nothing to code block with fake language- class', () => {
   const html = dedent`
     <pre><code class="language-thisisnotalanguage">p { color: red }</code></pre>
-  `;
-  const result = processHtml(html, { ignoreMissing: true });
-  expect(result).toMatchSnapshot();
-});
+  `
+  const result = processHtml(html, { ignoreMissing: true })
+  expect(result).toMatchSnapshot()
+})
+
+test('alias option works', () => {
+  const html = dedent`
+    <pre><code class="language-foo">p { color: red }</code></pre>
+  `
+  const result = processHtml(html, { alias: { css: ['foo'] } })
+  expect(result).toMatchSnapshot()
+})
+
+test('languages option works', () => {
+  const html = dedent`
+    <pre><code class="language-foo1">foo bar</code></pre>
+  `
+
+  function fooLanguage(Prism) {
+    Prism.languages.foo1 = {
+      foo: /foo/,
+      bar: /bar/
+    }
+  }
+  fooLanguage.displayName = 'foo1'
+
+  const result = processHtml(html, { languages: [fooLanguage] })
+  expect(result).toMatchSnapshot()
+})

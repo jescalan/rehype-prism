@@ -3,6 +3,14 @@ const nodeToString = require('hast-util-to-string')
 const refractor = require('refractor')
 
 module.exports = (options = {}) => {
+  if (options.alias) {
+    refractor.alias(options.alias)
+  }
+
+  if (options.languages) {
+    options.languages.map(lang => refractor.register(lang))
+  }
+
   return tree => {
     visit(tree, 'element', visitor)
   }

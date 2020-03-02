@@ -1,6 +1,5 @@
 # rehype-prism
 
-
 [![Build Status](https://travis-ci.org/mapbox/rehype-prism.svg?branch=master)](https://travis-ci.org/mapbox/rehype-prism)
 
 [rehype](https://github.com/wooorm/rehype) plugin to highlight code blocks in HTML with [Prism] (via [refractor]).
@@ -8,7 +7,7 @@
 (If you would like to highlight code blocks with [highlight.js](https://github.com/isagalaev/highlight.js), instead, check out [rehype-highlight](https://github.com/wooorm/rehype-highlight).)
 
 **Best suited for usage in Node.**
-If you would like to perform syntax highlighting *in the browser*, you should look into [less heavy ways to use refractor](https://github.com/wooorm/refractor#browser).
+If you would like to perform syntax highlighting _in the browser_, you should look into [less heavy ways to use refractor](https://github.com/wooorm/refractor#browser).
 
 ## Installation
 
@@ -39,6 +38,20 @@ By default, if `{name}` does not correspond to a [language supported by refracto
 
 If you would like to silently skip `<code>` elements with invalid languages, set this option to `true`.
 
+#### options.alias
+
+Type: `Object`
+Default: `{}`
+
+Alias the name of a given language. For example, to alias `foo` to `css`, you'd pass an object that looks like this: `{ alias: { css: 'foo' } }`. Can also be an array, like `{ alias: { css: ['foo', 'bar']} }`.
+
+#### options.register
+
+Type: `Array`
+Default: `[]`
+
+Register one or more new languages. See the [prism docs](https://prismjs.com/extending.html) for more information on how to format languages. Languages are passed in directly through the array, as in `{ languages: [fooLanguage, barLanguage] }`.
+
 ## Usage
 
 Use this package [as a rehype plugin](https://github.com/rehypejs/rehype/blob/master/doc/plugins.md#using-plugins).
@@ -46,38 +59,38 @@ Use this package [as a rehype plugin](https://github.com/rehypejs/rehype/blob/ma
 Some examples of how you might do that:
 
 ```js
-const rehype = require('rehype');
-const rehypePrism = require('rehype-prism');
+const rehype = require('rehype')
+const rehypePrism = require('rehype-prism')
 
 rehype()
   .use(rehypePrism)
-  .process(/* some html */);
+  .process(/* some html */)
 ```
 
 ```js
-const unified = require('unified');
-const rehypeParse = require('rehype-parse');
-const rehypePrism = require('rehype-prism');
+const unified = require('unified')
+const rehypeParse = require('rehype-parse')
+const rehypePrism = require('rehype-prism')
 
 unified()
   .use(rehypeParse)
   .use(rehypePrism)
-  .processSync(/* some html */);
+  .processSync(/* some html */)
 ```
 
 If you'd like to get syntax highlighting in Markdown, parse the Markdown (with remark-parse), convert it to rehype, then use this plugin.
 
 ```js
-const unified = require('unified');
-const remarkParse = require('remark-parse');
-const remarkRehype = require('remark-rehype');
-const rehypePrism = require('rehype-prism');
+const unified = require('unified')
+const remarkParse = require('remark-parse')
+const remarkRehype = require('remark-rehype')
+const rehypePrism = require('rehype-prism')
 
 unified()
   .use(remarkParse)
   .use(remarkRehype)
   .use(rehypePrism)
-  .process(/* some markdown */);
+  .process(/* some markdown */)
 ```
 
 ## FAQ
@@ -87,21 +100,22 @@ unified()
   
   [Prism recommends](https://prismjs.com/#basic-usage) adding the `language-` class to the `<code>` tag like this:
 
-  ```html
-  <pre><code class="language-css">p { color: red }</code></pre>
-  ```
+```html
+<pre><code class="language-css">p { color: red }</code></pre>
+```
 
-  It bases this recommendation on the HTML5 spec. However, an undocumented behavior of their JavaScript is that, in the process of highlighting the code, they also copy the `language-` class to the `<pre>` tag:
+It bases this recommendation on the HTML5 spec. However, an undocumented behavior of their JavaScript is that, in the process of highlighting the code, they also copy the `language-` class to the `<pre>` tag:
 
-  ```html
-  <pre class="language-css"><code class="language-css"><span class="token selector">p</span> <span class="token punctuation">{</span> <span class="token property">color</span><span class="token punctuation">:</span> red <span class="token punctuation">}</span></code></pre>
-  ```
+```html
+<pre
+  class="language-css"
+><code class="language-css"><span class="token selector">p</span> <span class="token punctuation">{</span> <span class="token property">color</span><span class="token punctuation">:</span> red <span class="token punctuation">}</span></code></pre>
+```
 
-  This resulted in many [Prism themes](https://github.com/PrismJS/prism-themes) relying on this behavior by using CSS selectors like `pre[class*="language-"]`. So in order for people using rehype-prism to get the most out of these themes, we decided to do the same.
+This resulted in many [Prism themes](https://github.com/PrismJS/prism-themes) relying on this behavior by using CSS selectors like `pre[class*="language-"]`. So in order for people using rehype-prism to get the most out of these themes, we decided to do the same.
+
 </details>
 
-[Prism]: http://prismjs.com/
-
+[prism]: http://prismjs.com/
 [refractor]: https://github.com/wooorm/refractor
-
 [language supported by refractor]: https://github.com/wooorm/refractor#syntaxes

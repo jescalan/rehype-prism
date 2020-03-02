@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`alias option works 1`] = `"<pre class=\\"language-foo\\"><code class=\\"language-foo\\"><span class=\\"token selector\\">p</span> <span class=\\"token punctuation\\">{</span> <span class=\\"token property\\">color</span><span class=\\"token punctuation\\">:</span> red <span class=\\"token punctuation\\">}</span></code></pre>"`;
+
 exports[`copies the language- class to pre tag 1`] = `"<pre class=\\"language-css\\"><code class=\\"language-css\\"></code></pre>"`;
 
 exports[`does nothing to code block without language- class 1`] = `"<pre><code>p { color: red }</code></pre>"`;
@@ -17,5 +19,7 @@ exports[`handles uppercase languages correctly 1`] = `
   <pre class=\\"language-css\\"><code class=\\"language-CSS\\"><span class=\\"token selector\\">p</span> <span class=\\"token punctuation\\">{</span> <span class=\\"token property\\">color</span><span class=\\"token punctuation\\">:</span> red <span class=\\"token punctuation\\">}</span></code></pre>
 </div>"
 `;
+
+exports[`languages option works 1`] = `"<pre class=\\"language-foo1\\"><code class=\\"language-foo1\\"><span class=\\"token foo\\">foo</span> <span class=\\"token bar\\">bar</span></code></pre>"`;
 
 exports[`with options.ignoreMissing, does nothing to code block with fake language- class 1`] = `"<pre class=\\"language-thisisnotalanguage\\"><code class=\\"language-thisisnotalanguage\\">p { color: red }</code></pre>"`;
